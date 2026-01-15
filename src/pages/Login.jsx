@@ -23,7 +23,7 @@ const Login = () => {
           name: result.data.user?.name || email,
           token: result.data.token,
         });
-        navigate("/users");
+        navigate("/movies");
       } else {
         setError(result.error || "Login gagal. Coba lagi!");
       }

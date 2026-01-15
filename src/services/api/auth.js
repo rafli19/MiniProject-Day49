@@ -2,13 +2,27 @@ import api from "./index";
 
 export const loginUser = async (email, password) => {
   try {
-    const response = await api.post("/login", { email, password });
+    const response = await api.post("/login", {
+      email,
+      password,
+    });
 
-    if (response.data.token) {
-      localStorage.setItem("token", response.data.token);
+    if (response.data.success && response.data.data.token) {
+      localStorage.setItem("token", response.data.data.token);
+      localStorage.setItem("user", JSON.stringify(response.data.data.user));
     }
 
-    return { success: true, data: response.data };
+    return {
+      success: true,
+      data: {
+        token: response.data.data.token,
+        user: {
+          name: response.data.data.user.name,
+          email: response.data.data.user.email,
+          id: response.data.data.user.id,
+        },
+      },
+    };
   } catch (error) {
     console.error("Login error:", error);
     return {
@@ -18,10 +32,36 @@ export const loginUser = async (email, password) => {
   }
 };
 
-export const registerUser = async (name, email, password) => {
+export const registerUser = async (
+  name,
+  email,
+  password,
+  password_confirmation
+) => {
   try {
-    const response = await api.post("/register", { name, email, password });
-    return { success: true, data: response.data };
+    const response = await api.post("/register", {
+      name,
+      email,
+      password,
+      password_confirmation,
+    });
+
+    if (response.data.success && response.data.data.token) {
+      localStorage.setItem("token", response.data.data.token);
+      localStorage.setItem("user", JSON.stringify(response.data.data.user));
+    }
+
+    return {
+      success: true,
+      data: {
+        token: response.data.data.token,
+        user: {
+          name: response.data.data.user.name,
+          email: response.data.data.user.email,
+          id: response.data.data.user.id,
+        },
+      },
+    };
   } catch (error) {
     console.error("Register error:", error);
     return {

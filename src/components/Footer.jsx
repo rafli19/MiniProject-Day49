@@ -11,13 +11,13 @@ import { Link } from "react-router-dom";
 
 const Footer = () => {
   return (
-    <footer className="bg-black text-white mt-8 p-8 w-full border-t border-gray-800">
+    <footer className="bg-black text-white mt-26 p-8 w-full border-t border-gray-800">
       <div className="container mx-auto">
         <div className="grid grid-cols-4 max-sm:grid-cols-1 gap-8 max-sm:gap-6">
           <div>
             <div>
               <span className="text-xl font-bold uppercase tracking-widest">
-                Dinetflix
+                CineNova
               </span>
             </div>
             <div className="text-gray-400 text-sm mt-2 mb-4">
@@ -107,7 +107,7 @@ const Footer = () => {
             <div className="flex flex-col gap-3">
               <div className="flex items-center gap-2 text-sm text-gray-300">
                 <Mail size={16} className="text-gray-400" />
-                <span>support@dinetflix.com</span>
+                <span>support@cinenova.com</span>
               </div>
               <div className="flex items-center gap-2 text-sm text-gray-300">
                 <Phone size={16} className="text-gray-400" />
@@ -123,7 +123,7 @@ const Footer = () => {
       </div>
 
       <div className="container mx-auto mt-8 pt-6 border-t border-gray-800 text-center text-gray-500 text-sm">
-        © 2025 Dinetflix. All rights reserved.
+        © 2025 CineNova. All rights reserved.
       </div>
     </footer>
   );

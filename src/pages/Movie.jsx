@@ -1,11 +1,12 @@
 import { useState, useEffect } from "react";
+import { Link } from "react-router-dom";
 import Header from "../components/Navbar";
 import Footer from "../components/Footer";
 import { getMovies } from "../services/api/movies";
 
 const Movie = () => {
   const [movies, setMovies] = useState([]);
-  const [selectedCategory, setSelectedCategory] = useState("All");
+  const [selectedCategoryId, setSelectedCategoryId] = useState("");
   const [searchQuery, setSearchQuery] = useState("");
   const [currentPage, setCurrentPage] = useState(1);
   const [totalPages, setTotalPages] = useState(1);
@@ -13,7 +14,7 @@ const Movie = () => {
 
   useEffect(() => {
     loadMovies();
-  }, [selectedCategory, searchQuery, currentPage]);
+  }, [selectedCategoryId, searchQuery, currentPage]);
 
   const loadMovies = async () => {
     setError("");
@@ -27,15 +28,15 @@ const Movie = () => {
         params.search = searchQuery;
       }
 
-      if (selectedCategory !== "All") {
-        params.category = selectedCategory;
+      if (selectedCategoryId) {
+        params.category_id = selectedCategoryId;
       }
 
       const result = await getMovies(params);
 
       if (result.success) {
         setMovies(result.data.data || result.data);
-        setTotalPages(result.data.last_page || 1);
+        setTotalPages(result.data.total_pages || 1); // ← Ganti last_page → total_pages
       } else {
         setError(result.error || "Failed to load movies");
       }
@@ -55,17 +56,26 @@ const Movie = () => {
         {/* Filter dan Search */}
         <div className="flex gap-4 mb-6">
           <select
-            value={selectedCategory}
+            value={selectedCategoryId}
             onChange={(e) => {
-              setSelectedCategory(e.target.value);
+              setSelectedCategoryId(e.target.value);
               setCurrentPage(1);
             }}
             className="bg-gray-800 text-white px-4 py-2 rounded border border-gray-700"
           >
-            <option value="All">All Categories</option>
-            <option value="Action">Action</option>
-            <option value="Drama">Drama</option>
-            <option value="Sci-Fi">Sci-Fi</option>
+            <option value="">All Categories</option>
+            <option value="1">Action</option>
+            <option value="2">Sci-Fi</option>
+            <option value="3">Thriller</option>
+            <option value="4">Adventure</option>
+            <option value="5">Comedy</option>
+            <option value="6">Drama</option>
+            <option value="7">Horror</option>
+            <option value="8">Romance</option>
+            <option value="9">Animation</option>
+            <option value="10">Documentary</option>
+            <option value="11">Fantasy</option>
+            <option value="12">Cyberpunk</option>
           </select>
 
           <input
@@ -95,21 +105,26 @@ const Movie = () => {
           </div>
         ) : (
           <>
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 mb-8">
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-3 justify-center mb-8">
               {movies.map((movie) => (
-                <div
+                <Link
                   key={movie.id}
-                  className="bg-gray-900 rounded-lg p-4 hover:bg-gray-800 transition cursor-pointer"
+                  to={`/movie/${movie.id}`}
+                  className="block bg-gray-900 rounded-lg p-3 hover:bg-gray-800 transition cursor-pointer w-full"
                 >
-                  <div className="bg-gray-700 h-[200px] rounded mb-3 flex items-center justify-center overflow-hidden">
+                  <div className="bg-black aspect-[2/3] rounded mb-3 overflow-hidden">
                     {movie.poster ? (
                       <img
-                        src={movie.poster}
+                        src={`http://rafvoid.my.id${movie.poster}`}
                         alt={movie.title}
                         className="w-full h-full object-cover"
                       />
                     ) : (
-                      <span className="text-gray-500">No Image</span>
+                      <img
+                        src="/images/no-poster.jpg"
+                        alt="No poster available"
+                        className="w-full h-full object-cover"
+                      />
                     )}
                   </div>
                   <h3 className="text-white font-bold text-lg">
@@ -117,18 +132,18 @@ const Movie = () => {
                   </h3>
                   <div className="flex justify-between text-gray-400 text-sm mt-2">
                     <span>{movie.category}</span>
-                    <span>{movie.year}</span>
+                    <span>{movie.release_year}</span>
                   </div>
                   <div className="text-yellow-500 text-sm mt-1">
                     ⭐ {movie.rating}
                   </div>
-                </div>
+                </Link>
               ))}
             </div>
 
             {/* Pagination */}
             {totalPages > 1 && (
-              <div className="flex justify-center gap-2">
+              <div className="flex justify-center items-center gap-2 flex-wrap">
                 <button
                   onClick={() => setCurrentPage(currentPage - 1)}
                   disabled={currentPage === 1}
@@ -141,7 +156,7 @@ const Movie = () => {
                   <button
                     key={index}
                     onClick={() => setCurrentPage(index + 1)}
-                    className={`px-4 py-2 rounded ${
+                    className={`px-4 py-2 rounded min-w-[40px] ${
                       currentPage === index + 1
                         ? "bg-red-600 text-white"
                         : "bg-gray-800 text-white hover:bg-gray-700"

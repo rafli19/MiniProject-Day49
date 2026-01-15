@@ -6,6 +6,7 @@ const Register = () => {
   const [name, setName] = useState("");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+  const [passwordConfirmation, setPasswordConfirmation] = useState("");
   const [error, setError] = useState("");
   const navigate = useNavigate();
 
@@ -13,8 +14,20 @@ const Register = () => {
     e.preventDefault();
     setError("");
 
+    // Opsional: validasi di frontend bahwa password cocok
+    if (password !== passwordConfirmation) {
+      setError("Password dan konfirmasi password tidak cocok.");
+      return;
+    }
+
     try {
-      const result = await registerUser(name, email, password);
+      // Kirim semua 4 parameter: name, email, password, passwordConfirmation
+      const result = await registerUser(
+        name,
+        email,
+        password,
+        passwordConfirmation
+      );
 
       if (result.success) {
         alert("Registration successful! Please login.");
@@ -72,6 +85,20 @@ const Register = () => {
               onChange={(e) => setPassword(e.target.value)}
               className="w-full bg-gray-800 text-white p-3 rounded border border-gray-700 focus:outline-none focus:border-red-600"
               placeholder="Enter your password"
+              required
+            />
+          </div>
+
+          <div className="mb-6">
+            <label className="text-gray-400 text-sm block mb-2">
+              Confirm Password
+            </label>
+            <input
+              type="password"
+              value={passwordConfirmation}
+              onChange={(e) => setPasswordConfirmation(e.target.value)}
+              className="w-full bg-gray-800 text-white p-3 rounded border border-gray-700 focus:outline-none focus:border-red-600"
+              placeholder="Confirm your password"
               required
             />
           </div>

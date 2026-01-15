@@ -7,6 +7,7 @@ import Login from "./pages/Login";
 import Users from "./pages/Users";
 import UserDetail from "./pages/UserDetail";
 import Movie from "./pages/Movie";
+import MovieDetail from "./pages/MovieDetail";
 import "./index.css";
 
 const App = () => {
@@ -18,6 +19,7 @@ const App = () => {
           <Route path="/register" element={<Register />} />
           <Route path="/login" element={<Login />} />
           <Route path="/movies" element={<Movie />} />
+          <Route path="/movie/:id" element={<MovieDetail />} />
           <Route
             path="/users"
             element={

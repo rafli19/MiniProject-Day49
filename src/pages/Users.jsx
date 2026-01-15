@@ -9,6 +9,7 @@ const Users = () => {
   const [loading, setLoading] = useState(true);
   const [currentPage, setCurrentPage] = useState(1);
   const [totalPages, setTotalPages] = useState(1);
+  const [error, setError] = useState("");
 
   // Fetch users setiap kali halaman berubah
   useEffect(() => {
@@ -18,14 +19,23 @@ const Users = () => {
   // Load users dari API
   const loadUsers = async (page) => {
     setLoading(true);
-    const result = await getUsers(page);
+    setError("");
 
-    if (result.success) {
-      setUsers(result.data.data);
-      setTotalPages(result.data.total_pages);
+    try {
+      const result = await getUsers(page);
+
+      if (result.success) {
+        setUsers(result.data.data.data || []);
+        setTotalPages(result.data.data.last_page || 1);
+      } else {
+        setError(result.error || "Failed to load users");
+      }
+    } catch (err) {
+      setError("Terjadi kesalahan saat memuat data");
+      console.error("Load users error:", err);
+    } finally {
+      setLoading(false);
     }
-
-    setLoading(false);
   };
 
   // Ganti halaman
@@ -48,30 +58,50 @@ const Users = () => {
       <div className="container mx-auto px-4 py-8 flex-grow">
         <h1 className="text-white text-3xl font-bold mb-6">User List</h1>
 
+        {/* Error Message */}
+        {error && (
+          <div className="bg-red-600 text-white p-4 rounded mb-6">{error}</div>
+        )}
+
         {loading ? (
           <div className="text-white text-center py-20">Loading...</div>
         ) : (
           <>
             {/* Grid Users */}
-            <div className="grid grid-cols-3 max-sm:grid-cols-1 gap-6 mb-8">
-              {users.map((user) => (
-                <Link
-                  key={user.id}
-                  to={`/users/${user.id}`}
-                  className="bg-gray-900 rounded-lg p-4 hover:bg-gray-800 transition"
-                >
-                  <img
-                    src={user.avatar}
-                    alt={user.first_name}
-                    className="w-full h-48 object-cover rounded mb-3"
-                  />
-                  <h3 className="text-white font-bold text-lg">
-                    {user.first_name} {user.last_name}
-                  </h3>
-                  <p className="text-gray-400 text-sm mt-1">{user.email}</p>
-                </Link>
-              ))}
-            </div>
+            {users.length === 0 ? (
+              <div className="text-white text-center py-20">
+                <p className="text-xl">No users found</p>
+                <p className="text-gray-400 mt-2">
+                  Try adding a new user or check your database.
+                </p>
+              </div>
+            ) : (
+              <div className="grid grid-cols-4 max-sm:grid-cols-1 gap-6 mb-8">
+                {users.map((user) => (
+                  <Link
+                    key={user.id}
+                    to={`/users/${user.id}`}
+                    className="bg-gray-900 rounded-lg p-4 hover:bg-gray-800 transition w-80"
+                  >
+                    <div className="w-32 h-32 overflow-hidden rounded-full mx-auto mb-3">
+                      <img
+                        src={
+                          user.avatar
+                            ? `http://rafvoid.my.id${user.avatar}`
+                            : "http://rafvoid.my.id/images/default-avatar.png"
+                        }
+                        alt={user.name}
+                        className="w-full h-full object-cover"
+                      />
+                    </div>
+                    <h3 className="text-white font-bold text-lg">
+                      {user.name}
+                    </h3>
+                    <p className="text-gray-400 text-sm mt-1">{user.email}</p>
+                  </Link>
+                ))}
+              </div>
+            )}
 
             {/* Pagination */}
             <div className="flex justify-center gap-2">
