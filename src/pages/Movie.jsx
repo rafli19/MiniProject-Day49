@@ -119,7 +119,7 @@ const Movie = () => {
                         alt={movie.title}
                         className="w-full h-full object-cover"
                         onError={(e) => {
-                          e.target.src = "/images/no-poster.png";
+                          e.target.src = "/no-poster.png";
                         }}
                       />
                     ) : (
