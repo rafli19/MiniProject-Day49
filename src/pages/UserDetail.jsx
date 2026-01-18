@@ -2,7 +2,7 @@ import { useState, useEffect } from "react";
 import { useParams, Link } from "react-router-dom";
 import Header from "../components/Navbar";
 import Footer from "../components/Footer";
-import { getUserById } from "../services/api/users";
+import { getUserById, updateUser } from "../services/api/users";
 
 const UserDetail = () => {
   const { id } = useParams();
@@ -34,6 +34,29 @@ const UserDetail = () => {
     }
   };
 
+  const handleAvatarChange = async (e) => {
+    const file = e.target.files[0];
+    if (!file) return;
+
+    const formData = new FormData();
+    formData.append("avatar", file);
+
+    try {
+      const result = await updateUser(id, { avatar: file });
+      if (result.success) {
+        setUser((prev) => ({
+          ...prev,
+          avatar: result.data.data.avatar,
+        }));
+      } else {
+        alert(result.error || "Gagal mengunggah avatar");
+      }
+    } catch (err) {
+      console.error("Avatar upload error:", err);
+      alert("Terjadi kesalahan saat mengunggah avatar");
+    }
+  };
+
   return (
     <div className="min-h-screen bg-black flex flex-col">
       <Header />
@@ -46,7 +69,6 @@ const UserDetail = () => {
           ← Back to Users
         </Link>
 
-        {/* Error Message */}
         {error && (
           <div className="bg-red-600 text-white p-4 rounded mb-6">{error}</div>
         )}
@@ -54,10 +76,10 @@ const UserDetail = () => {
         {loading ? (
           <div className="text-white text-center py-20">Loading...</div>
         ) : user ? (
-          <div className="bg-gray-900 rounded-lg p-8 max-w-2xl mx-auto">
+          <div className="bg-gray-900 rounded-lg p-6 sm:p-8 max-w-2xl mx-auto">
             <div className="flex flex-col items-center">
               {/* Avatar */}
-              <div className="w-48 h-48 rounded-full overflow-hidden mb-6">
+              <div className="w-32 h-32 sm:w-48 sm:h-48 rounded-full overflow-hidden mb-4">
                 <img
                   src={
                     user.avatar
@@ -66,18 +88,40 @@ const UserDetail = () => {
                   }
                   alt={user.name}
                   className="w-full h-full object-cover"
+                  onError={(e) => {
+                    e.target.src =
+                      "https://api.rafvoid.my.id/images/default-avatar.png";
+                  }}
                 />
               </div>
 
-              {/* Name */}
-              <h1 className="text-white text-3xl font-bold mb-2">
+              <label
+                htmlFor="avatar-input"
+                className="cursor-pointer bg-[#e50914] text-white px-4 py-2 rounded-md text-sm hover:bg-red-700 transition mb-4"
+              >
+                Ubah Avatar
+              </label>
+              <input
+                id="avatar-input"
+                type="file"
+                accept="image/*"
+                onChange={handleAvatarChange}
+                className="hidden"
+              />
+
+              <h1 className="text-white text-2xl sm:text-3xl font-bold mb-2">
                 {user.name}
               </h1>
 
-              {/* Email */}
               <p className="text-gray-400 text-lg mb-6">{user.email}</p>
 
-              {/* Simple Info Card */}
+              <Link
+                to={`/users/${user.id}/edit`}
+                className="bg-gray-700 text-white px-4 py-2 rounded-md text-sm hover:bg-gray-600 transition mb-6"
+              >
+                Edit Profile Lengkap
+              </Link>
+
               <div className="bg-gray-800 p-6 rounded w-full">
                 <h2 className="text-white text-xl font-bold mb-4">
                   User Information

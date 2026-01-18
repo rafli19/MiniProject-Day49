@@ -7,14 +7,14 @@ const Login = () => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [error, setError] = useState("");
-  const [isLoading, setIsLoading] = useState(false); // ← Tambah ini
+  const [isLoading, setIsLoading] = useState(false);
   const { login } = useAuth();
   const navigate = useNavigate();
 
   const handleSubmit = async (e) => {
     e.preventDefault();
     setError("");
-    setIsLoading(true); // ← Tambah ini
+    setIsLoading(true);
 
     try {
       const result = await loginUser(email, password);
@@ -33,7 +33,7 @@ const Login = () => {
       setError("Terjadi kesalahan. Silakan coba lagi.");
       console.error("Login error:", err);
     } finally {
-      setIsLoading(false); // ← Tambah ini
+      setIsLoading(false);
     }
   };
 
@@ -58,7 +58,7 @@ const Login = () => {
               className="w-full bg-gray-800 text-white p-3 rounded border border-gray-700 focus:outline-none focus:border-red-600"
               placeholder="Enter your email"
               required
-              disabled={isLoading} // ← Tambah ini
+              disabled={isLoading}
             />
           </div>
 
@@ -71,16 +71,16 @@ const Login = () => {
               className="w-full bg-gray-800 text-white p-3 rounded border border-gray-700 focus:outline-none focus:border-red-600"
               placeholder="Enter your password"
               required
-              disabled={isLoading} // ← Tambah ini
+              disabled={isLoading}
             />
           </div>
 
           <button
             type="submit"
-            disabled={isLoading} // ← Tambah ini
+            disabled={isLoading}
             className="w-full bg-red-600 text-white py-3 rounded hover:bg-red-700 transition disabled:opacity-50 disabled:cursor-not-allowed"
           >
-            {isLoading ? "Logging in..." : "Login"} {/* ← Tambah ini */}
+            {isLoading ? "Logging in..." : "Login"}
           </button>
         </form>
 

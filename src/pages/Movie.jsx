@@ -3,6 +3,7 @@ import { Link } from "react-router-dom";
 import Header from "../components/Navbar";
 import Footer from "../components/Footer";
 import { getMovies } from "../services/api/movies";
+import { Star } from "lucide-react";
 
 const Movie = () => {
   const [movies, setMovies] = useState([]);
@@ -90,7 +91,6 @@ const Movie = () => {
           />
         </div>
 
-        {/* Error Message */}
         {error && (
           <div className="bg-red-600 text-white p-4 rounded mb-6">{error}</div>
         )}
@@ -105,7 +105,7 @@ const Movie = () => {
           </div>
         ) : (
           <>
-            <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4 mb-8">
+            <div className="grid grid-cols-2 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4 mb-8">
               {movies.map((movie) => (
                 <Link
                   key={movie.id}
@@ -121,6 +121,7 @@ const Movie = () => {
                         onError={(e) => {
                           e.target.src = "/images/no-poster.png";
                         }}
+                        loading="lazy"
                       />
                     ) : (
                       <img
@@ -137,8 +138,9 @@ const Movie = () => {
                     <span>{movie.category}</span>
                     <span>{movie.release_year}</span>
                   </div>
-                  <div className="text-yellow-500 text-xs mt-1">
-                    ⭐ {movie.rating}
+                  <div className="flex items-center gap-1 text-yellow-500 text-xs mt-1">
+                    <Star size={14} fill="currentColor" />
+                    <span>{movie.rating}</span>
                   </div>
                 </Link>
               ))}

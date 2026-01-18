@@ -16,7 +16,6 @@ const Users = () => {
     loadUsers(currentPage);
   }, [currentPage]);
 
-  // Load users dari API
   const loadUsers = async (page) => {
     setLoading(true);
     setError("");
@@ -38,7 +37,6 @@ const Users = () => {
     }
   };
 
-  // Ganti halaman
   const handlePrevious = () => {
     if (currentPage > 1) {
       setCurrentPage(currentPage - 1);
@@ -58,7 +56,6 @@ const Users = () => {
       <div className="container mx-auto px-4 py-8 flex-grow">
         <h1 className="text-white text-3xl font-bold mb-6">User List</h1>
 
-        {/* Error Message */}
         {error && (
           <div className="bg-red-600 text-white p-4 rounded mb-6">{error}</div>
         )}
@@ -76,12 +73,12 @@ const Users = () => {
                 </p>
               </div>
             ) : (
-              <div className="grid grid-cols-4 max-sm:grid-cols-1 gap-6 mb-8">
+              <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6 mb-8">
                 {users.map((user) => (
                   <Link
                     key={user.id}
                     to={`/users/${user.id}`}
-                    className="bg-gray-900 rounded-lg p-4 hover:bg-gray-800 transition w-80"
+                    className="bg-gray-900 rounded-lg p-4 hover:bg-gray-800 transition"
                   >
                     <div className="w-32 h-32 overflow-hidden rounded-full mx-auto mb-3">
                       <img
@@ -92,12 +89,18 @@ const Users = () => {
                         }
                         alt={user.name}
                         className="w-full h-full object-cover"
+                        onError={(e) => {
+                          e.target.src =
+                            "https://api.rafvoid.my.id/images/default-avatar.png";
+                        }}
                       />
                     </div>
-                    <h3 className="text-white font-bold text-lg">
+                    <h3 className="text-white font-bold text-lg text-center truncate">
                       {user.name}
                     </h3>
-                    <p className="text-gray-400 text-sm mt-1">{user.email}</p>
+                    <p className="text-gray-400 text-sm mt-1 text-center">
+                      {user.email}
+                    </p>
                   </Link>
                 ))}
               </div>

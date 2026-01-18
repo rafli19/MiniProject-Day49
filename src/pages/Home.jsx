@@ -1,4 +1,5 @@
 import { useState, useEffect } from "react";
+import { Link } from "react-router-dom";
 import Header from "../components/Navbar";
 import Footer from "../components/Footer";
 import { getMovies } from "../services/api/movies";
@@ -6,12 +7,29 @@ import { getMovies } from "../services/api/movies";
 const Home = () => {
   const [email, setEmail] = useState("");
   const [trendingMovies, setTrendingMovies] = useState([]);
+  const [newReleases, setNewReleases] = useState([]);
 
   useEffect(() => {
     loadTrendingMovies();
+    loadNewReleases();
   }, []);
 
   const loadTrendingMovies = async () => {
+    try {
+      const result = await getMovies({
+        page: 1,
+        sort_by: "rating",
+        order: "desc",
+      });
+      if (result.success) {
+        setTrendingMovies(result.data.data.slice(0, 6));
+      }
+    } catch (err) {
+      console.error("Failed to fetch trending movies:", err);
+    }
+  };
+
+  const loadNewReleases = async () => {
     try {
       const result = await getMovies({
         page: 1,
@@ -19,10 +37,10 @@ const Home = () => {
         order: "desc",
       });
       if (result.success) {
-        setTrendingMovies(result.data.data.slice(0, 5));
+        setNewReleases(result.data.data.slice(0, 6));
       }
     } catch (err) {
-      console.error("Failed to fetch trending movies:", err);
+      console.error("Failed to fetch new releases:", err);
     }
   };
 
@@ -35,8 +53,23 @@ const Home = () => {
     setEmail("");
   };
 
+  const genres = [
+    { name: "Action", id: "1" },
+    { name: "Sci-Fi", id: "2" },
+    { name: "Thriller", id: "3" },
+    { name: "Adventure", id: "4" },
+    { name: "Comedy", id: "5" },
+    { name: "Drama", id: "6" },
+    { name: "Horror", id: "7" },
+    { name: "Romance", id: "8" },
+    { name: "Animation", id: "9" },
+    { name: "Documentary", id: "10" },
+    { name: "Fantasy", id: "11" },
+    { name: "Cyberpunk", id: "12" },
+  ];
+
   return (
-    <div className="font-sans antialiased text-kakaes-brown bg-black overflow-x-hidden min-h-screen flex flex-col">
+    <div className="font-sans antialiased text-white bg-black overflow-x-hidden min-h-screen flex flex-col">
       <Header />
 
       {/* Hero Section */}
@@ -79,67 +112,91 @@ const Home = () => {
       </section>
 
       {/* Trending Now */}
-      <section className="py-10 px-4 sm:px-6 lg:px-8">
+      <section className="py-10 px-4 sm:px-6 lg:px-8 bg-black">
         <div className="max-w-6xl mx-auto">
           <h2 className="text-white font-bold text-xl sm:text-2xl mb-6">
             Trending Now
           </h2>
-          <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-5 gap-4">
+          <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-6 gap-4">
             {trendingMovies.map((movie, index) => (
-              <div key={movie.id} className="relative group">
-                <span className="absolute text-white text-2xl sm:text-4xl font-bold bottom-2 left-2 z-10">
-                  {index + 1}
-                </span>
-                <img
-                  src={`https://api.rafvoid.my.id${movie.poster}`}
-                  alt={movie.title}
-                  className="w-full h-40 sm:h-60 object-cover rounded-md transition-transform group-hover:scale-105"
-                />
-              </div>
+              <Link key={movie.id} to={`/movie/${movie.id}`} className="group">
+                <div className="relative">
+                  <span className="absolute text-white text-2xl sm:text-4xl font-bold bottom-2 left-2 z-10">
+                    {index + 1}
+                  </span>
+                  <img
+                    src={`https://api.rafvoid.my.id${movie.poster}`}
+                    alt={movie.title}
+                    className="w-full h-40 sm:h-60 object-cover rounded-md transition-transform group-hover:scale-105 bg-gray-900"
+                    onError={(e) => {
+                      e.target.src = "/images/no-poster.png";
+                    }}
+                    loading="lazy"
+                  />
+                </div>
+                <p className="text-white text-xs mt-1 truncate">
+                  {movie.title}
+                </p>
+              </Link>
             ))}
           </div>
         </div>
       </section>
 
-      {/* Other Reasons to Join */}
+      {/* New Releases */}
       <section className="py-10 px-4 sm:px-6 lg:px-8 bg-black">
         <div className="max-w-6xl mx-auto">
           <h2 className="text-white font-bold text-xl sm:text-2xl mb-6">
-            Other Reasons to Join
+            New Releases
           </h2>
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
-            {[
-              {
-                title: "Enjoy on your TV",
-                desc: "Watch on Smart TVs, Playstation, Xbox, Chromecast, Apple TV, Blu-ray players, and more.",
-              },
-              {
-                title: "Download this series to watch it offline.",
-                desc: "Save your favorites easily so you always have TV shows and movies to watch.",
-              },
-              {
-                title: "Watch anywhere",
-                desc: "Stream unlimited movies and TV series on your phone, tablet, laptop, and TV.",
-              },
-              {
-                title: "Create a profile for your child",
-                desc: "Send your kids on adventures with their favorite characters in a world created just for them — free with your membership.",
-              },
-            ].map((item, idx) => (
-              <div
-                key={idx}
-                className="bg-gradient-to-r from-violet-600 to-indigo-600 rounded-md p-4 sm:p-6 text-white flex flex-col"
-              >
-                <h3 className="text-lg sm:text-xl font-bold mb-2">
-                  {item.title}
-                </h3>
-                <p className="text-sm sm:text-base text-justify flex-1">
-                  {item.desc}
+          <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-6 gap-4">
+            {newReleases.map((movie) => (
+              <Link key={movie.id} to={`/movie/${movie.id}`} className="group">
+                <img
+                  src={`https://api.rafvoid.my.id${movie.poster}`}
+                  alt={movie.title}
+                  className="w-full h-40 sm:h-60 object-cover rounded-md transition-transform group-hover:scale-105 bg-gray-900"
+                  onError={(e) => {
+                    e.target.src = "/images/no-poster.png";
+                  }}
+                  loading="lazy"
+                />
+                <p className="text-white text-xs mt-1 truncate">
+                  {movie.title}
                 </p>
-              </div>
+              </Link>
             ))}
           </div>
         </div>
+      </section>
+
+      {/* Browse by Genre */}
+      <section className="py-10 px-4 sm:px-6 lg:px-8 bg-black">
+        <div className="max-w-6xl mx-auto">
+          <h2 className="text-white font-bold text-xl sm:text-2xl mb-6">
+            Browse by Genre
+          </h2>
+          <div className="flex flex-wrap gap-3 justify-center">
+            {genres.map((genre) => (
+              <Link
+                key={genre.id}
+                to={`/movies?category=${genre.id}`}
+                className="bg-gray-900 hover:bg-red-600 text-white px-4 py-2 rounded-full text-sm transition"
+              >
+                {genre.name}
+              </Link>
+            ))}
+          </div>
+        </div>
+      </section>
+
+      {/* Testimoni */}
+      <section className="py-8 px-4 bg-gray-900 text-center">
+        <p className="text-gray-300 italic max-w-2xl mx-auto">
+          “CineNova bikin nonton jadi lebih seru. Gak pake iklan, kualitas
+          gambar oke, dan selalu ada film baru tiap minggu.”
+        </p>
+        <p className="text-gray-400 mt-2">- Theodore, Bandung</p>
       </section>
 
       <Footer />

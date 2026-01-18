@@ -35,7 +35,7 @@ const Navbar = () => {
           </Link>
         </div>
 
-        {/* Hamburger Button (Mobile Only) */}
+        {/* Hamburger */}
         <button
           className="sm:hidden text-white focus:outline-none"
           onClick={() => setIsMenuOpen(!isMenuOpen)}
@@ -66,7 +66,7 @@ const Navbar = () => {
           </svg>
         </button>
 
-        {/* Desktop Menu */}
+        {/* Desktop */}
         <div className="hidden sm:flex items-center gap-6">
           <Link
             to="/"
@@ -116,7 +116,7 @@ const Navbar = () => {
         </div>
       </div>
 
-      {/* Mobile Menu (Dropdown) */}
+      {/* Mobile Dropdown */}
       {isMenuOpen && (
         <div className="sm:hidden mt-4 pb-4 space-y-4 border-t border-gray-700">
           <Link

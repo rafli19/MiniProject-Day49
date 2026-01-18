@@ -14,19 +14,17 @@ const Register = () => {
     e.preventDefault();
     setError("");
 
-    // Opsional: validasi di frontend bahwa password cocok
     if (password !== passwordConfirmation) {
       setError("Password dan konfirmasi password tidak cocok.");
       return;
     }
 
     try {
-      // Kirim semua 4 parameter: name, email, password, passwordConfirmation
       const result = await registerUser(
         name,
         email,
         password,
-        passwordConfirmation
+        passwordConfirmation,
       );
 
       if (result.success) {

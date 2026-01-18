@@ -6,6 +6,7 @@ import Register from "./pages/Register";
 import Login from "./pages/Login";
 import Users from "./pages/Users";
 import UserDetail from "./pages/UserDetail";
+import UserEdit from "./pages/UserEdit"; // ← tambahkan ini
 import Movie from "./pages/Movie";
 import MovieDetail from "./pages/MovieDetail";
 import "./index.css";
@@ -20,6 +21,8 @@ const App = () => {
           <Route path="/login" element={<Login />} />
           <Route path="/movies" element={<Movie />} />
           <Route path="/movie/:id" element={<MovieDetail />} />
+
+          {/* User Routes */}
           <Route
             path="/users"
             element={
@@ -33,6 +36,14 @@ const App = () => {
             element={
               <ProtectedRoute>
                 <UserDetail />
+              </ProtectedRoute>
+            }
+          />
+          <Route
+            path="/users/:id/edit"
+            element={
+              <ProtectedRoute>
+                <UserEdit />
               </ProtectedRoute>
             }
           />

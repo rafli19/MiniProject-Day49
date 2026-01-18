@@ -44,7 +44,7 @@ const MovieDetail = () => {
 
   const loadSimilarMovies = async () => {
     setLoading(true);
-    setError(""); // Reset error
+    setError("");
 
     try {
       const response = await fetch(
@@ -57,7 +57,7 @@ const MovieDetail = () => {
 
         const filtered = allMovies
           .filter((movie) => movie.id !== parseInt(id))
-          .slice(0, 4);
+          .slice(0, 5);
 
         setSimilarMovies(filtered);
       } else {
@@ -108,7 +108,6 @@ const MovieDetail = () => {
 
       {/* Hero Section */}
       <div className="relative">
-        {/* Gambar utama sebagai img (bukan background) */}
         <div className="relative h-[700px] overflow-hidden">
           <img
             src={`https://api.rafvoid.my.id${movie.poster}`}
@@ -118,7 +117,6 @@ const MovieDetail = () => {
           <div className="absolute inset-0 bg-gradient-to-t from-black via-black/50 to-transparent"></div>
         </div>
 
-        {/* Konten teks di atas gambar */}
         <div className="absolute bottom-0 left-0 right-0 p-12">
           <div className="max-w-7xl mx-auto">
             <h1 className="text-white text-6xl font-bold mb-4">
@@ -201,7 +199,7 @@ const MovieDetail = () => {
               No similar movies found
             </div>
           ) : (
-            <div className="grid grid-cols-4 gap-4">
+            <div className="grid grid-cols-5 gap-4">
               {similarMovies.map((similarMovie) => (
                 <Link
                   key={similarMovie.id}
