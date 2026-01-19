@@ -6,10 +6,9 @@ export default defineConfig({
   plugins: [react(), tailwindcss()],
   server: {
     proxy: {
-      "/api": {
+      "/v1": {
         target: "https://api.rafvoid.my.id",
         changeOrigin: true,
-        rewrite: (path) => path.replace(/^\/api/, "/v1"),
       },
       "/storage": {
         target: "https://api.rafvoid.my.id",

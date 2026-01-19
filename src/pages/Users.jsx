@@ -99,13 +99,14 @@ const Users = () => {
                       <img
                         src={
                           user.avatar
-                            ? `/storage${user.avatar}`
-                            : "/storage/avatars/ava.png"
+                            ? `https://api.rafvoid.my.id/storage${user.avatar}`
+                            : `https://api.rafvoid.my.id/storage/avatars/ava.png`
                         }
                         alt={user.name}
                         className="w-full h-full object-cover"
                         onError={(e) => {
-                          e.target.src = "/storage/avatars/ava.png";
+                          e.target.onerror = null;
+                          e.target.src = `https://ui-avatars.com/api/?name=${encodeURIComponent(user.name)}&background=4A5568&color=fff&size=200`;
                         }}
                       />
                     </div>
