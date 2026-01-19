@@ -3,6 +3,7 @@ import { useParams, Link, useNavigate } from "react-router-dom";
 import Header from "../components/Navbar";
 import Footer from "../components/Footer";
 import { getUserById, updateUser } from "../services/api/users";
+import fallbackAvatar from "../assets/images/ava.png";
 
 const UserDetail = () => {
   const { id } = useParams();
@@ -75,9 +76,14 @@ const UserDetail = () => {
 
   const getAvatarUrl = (avatarPath) => {
     if (!avatarPath) {
-      return "/storage/avatars/ava.png";
+      return fallbackAvatar;
     }
-    return `/storage${avatarPath}`;
+
+    if (avatarPath.startsWith("/avatars/")) {
+      return `https://api.rafvoid.my.id/storage${avatarPath}`;
+    }
+
+    return avatarPath;
   };
 
   return (
@@ -107,7 +113,8 @@ const UserDetail = () => {
                   alt={user.name}
                   className="w-full h-full object-cover"
                   onError={(e) => {
-                    e.target.src = "/storage/avatars/ava.png";
+                    e.target.src = fallbackAvatar;
+                    e.target.onerror = null;
                   }}
                 />
                 {uploading && (
